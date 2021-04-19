@@ -2,7 +2,7 @@
 
 ## Goal
 
-Our task list API allows users with to meaningfully use the task resource. Users want to be able to mark a task as "complete" or "incomplete."
+Our task list API allows users to meaningfully use the task resource. Users want to be able to mark a task as "complete" or "incomplete."
 
 We want to design our API so that it stores a task's `completed_at` date as a datetime value in our database. In this scenario, our API does _not_ give users the `completed_at` date... it only gives the information if `is_complete` is `true` or `false`.
 
@@ -10,7 +10,7 @@ A task's `is_complete` is `true` when there is a datetime for the task's `comple
 
 ## Requirements
 
-The following route is required for wave 3.
+The following are required routes for wave 3. Feel free to implement the routes in any order within this wave.
 
 ### Tips
 
@@ -22,14 +22,14 @@ The following route is required for wave 3.
 - JSON's value of `true` is similar to Python's value of `True`, and `false` is similar to Python's `False`.
 - JSON's value of `null` is similar to Python's value of `None`.
 
-### Toggle Complete: Mark Complete on an Incomplete Task
+### Mark Complete on an Incompleted Task
 
 Given a task that has:
 
 - An id `1`
 - A `completed_at` attribute with a `null` value
 
-when I send a `PATCH` request to `/tasks/1/complete`,
+when I send a `PATCH` request to `/tasks/1/mark_complete`,
 
 then the task is updated, so that its `completed_at` value is the current date, and I get this response:
 
@@ -46,14 +46,14 @@ then the task is updated, so that its `completed_at` value is the current date, 
 }
 ```
 
-### Toggle Complete: Mark Complete on an Incomplete Task
+### Mark Incomplete on a Completed Task
 
 Given a task that has:
 
 - An id `1`
 - A `completed_at` attribute with a datetime value
 
-when I send a `PATCH` request to `/tasks/1/complete`,
+when I send a `PATCH` request to `/tasks/1/mark_incomplete`,
 
 then the task is updated, so that its `completed_at` value is `null`/`None`, and I get this response:
 
@@ -69,3 +69,59 @@ then the task is updated, so that its `completed_at` value is `null`/`None`, and
   }
 }
 ```
+
+### Mark Complete on a Completed Task
+
+Given a task that has:
+
+- An id `1`
+- A `completed_at` attribute with a datetime value
+
+when I send a `PATCH` request to `/tasks/1/mark_complete`,
+
+then I want this to behave exactly like `/tasks/1/mark_complete` for an incomplete task. The task is updated, so that its `completed_at` value is the current date, and I get this response:
+
+`200 OK`
+
+```json
+{
+  "task": {
+    "id": 1,
+    "title": "Go on my daily walk 🏞",
+    "description": "Notice something new every day",
+    "is_complete": true
+  }
+}
+```
+
+### Mark Incomplete on an Incompleted Task
+
+Given a task that has:
+
+- An id `1`
+- A `completed_at` attribute with a `null` value
+
+when I send a `PATCH` request to `/tasks/1/mark_incomplete`,
+
+then I want this to behave exactly like `/tasks/1/mark_complete` for an incomplete task. Its `completed_at` value remains as `null`/`None`, and I get this response:
+
+`200 OK`
+
+```json
+{
+  "task": {
+    "id": 1,
+    "title": "Go on my daily walk 🏞",
+    "description": "Notice something new every day",
+    "is_complete": false
+  }
+}
+```
+
+## Mark Complete and Mark Incomplete for Missing Tasks
+
+Given that there are no tasks with the ID `1`,
+
+When I send a `PATCH` request to `/tasks/1/mark_complete` or a `PATCH` request `/tasks/1/mark_incomplete`,
+
+Then I get a `404 Not Found`, with no response body.
