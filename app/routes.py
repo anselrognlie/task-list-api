@@ -3,18 +3,40 @@ from flask import Blueprint, jsonify, make_response, request
 from app import db
 from .models.task import Task
 
-bp = Blueprint("bp", __name__)
+print(__name__)
+
+root_bp = Blueprint("root", __name__)
+bp = Blueprint("tasks", __name__, url_prefix="/tasks")
+
+@root_bp.route("/broken-endpoint-with-broken-server-code")
+def broken_endpoint():
+    response_body = {
+        "name": "Ada Lovelace",
+        "message": "Hello!",
+        "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
+    }
+    new_hobby = "Surfing"
+    response_body["hobbies"] + new_hobby
+    return response_body
 
 
-@bp.route("/", methods=('GET',))
+@root_bp.route("/", methods=('GET',))
 def root():
     return {
         "name": "Joe",
         "message": "Go!"
     }
 
+@root_bp.route("/hello", methods=('GET',))
+def hello():
+    return make_response({ "detail":"some text" }, 201)
 
-@bp.route("/tasks", methods=('GET', 'POST'))
+
+# https://stackoverflow.com/questions/33241050/trailing-slash-triggers-404-in-flask-path-rule
+# https://searchfacts.com/url-trailing-slash/
+@bp.route("/", methods=('GET', 'POST'), strict_slashes=False)
+# @bp.route("/", methods=('GET', 'POST'))
+# @bp.route("", methods=('GET', 'POST'))
 def tasks_index():
     if request.method == 'GET':
         tasks = Task.query.all()
@@ -37,9 +59,10 @@ def tasks_index():
                 "details": "Invalid data"
             }, 400
 
-@bp.route("/tasks/<task_id>", methods=('GET', 'PUT', 'DELETE'))
+@bp.route("/<task_id>", methods=('GET', 'PUT', 'DELETE'))
 def tasks_show(task_id):
     task = Task.query.filter(Task.task_id == task_id).one_or_none()
+    # task = Task.query.get(task_id)
     if not task:
         return "", 404
 
