@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, make_response, request
+from sqlalchemy import desc
 
 from app import db
 from .models.task import Task
 
-print(__name__)
+# print(__name__)
 
 root_bp = Blueprint("root", __name__)
 bp = Blueprint("tasks", __name__, url_prefix="/tasks")
@@ -39,7 +40,19 @@ def hello():
 # @bp.route("", methods=('GET', 'POST'))
 def tasks_index():
     if request.method == 'GET':
-        tasks = Task.query.all()
+        sort = None
+        if 'sort' in request.args:
+            sort = 'desc' if request.args.get('sort', 'asc') == 'desc' else 'asc'
+
+        tasks = Task.query
+        if sort is not None:
+            if sort == 'asc':
+                tasks = tasks.order_by(Task.title)
+            else:
+                tasks = tasks.order_by(desc(Task.title))
+        
+        tasks = tasks.all()
+
         json_tasks = [task.to_json() for task in tasks]
 
         return jsonify(json_tasks)
@@ -53,7 +66,7 @@ def tasks_index():
 
             return {
                 "task": task.to_json()
-            }
+            }, 201
         else:
             return {
                 "details": "Invalid data"
@@ -81,3 +94,27 @@ def tasks_show(task_id):
         return {
             "details": f'Task {task_id} "{task.title}" successfully deleted'
         }
+
+@bp.route("/<task_id>/mark_complete", methods=('PATCH',))
+def tasks_mark_complete(task_id):
+    task = Task.query.filter(Task.task_id == task_id).one_or_none()
+    if not task:
+        return "", 404
+
+    task.mark_complete()
+
+    db.session.commit()
+
+    return { "task": task.to_json() }
+
+@bp.route("/<task_id>/mark_incomplete", methods=('PATCH',))
+def tasks_mark_incomplete(task_id):
+    task = Task.query.filter(Task.task_id == task_id).one_or_none()
+    if not task:
+        return "", 404
+
+    task.mark_incomplete()
+
+    db.session.commit()
+
+    return { "task": task.to_json() }

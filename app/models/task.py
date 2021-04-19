@@ -1,5 +1,5 @@
 from app import db
-
+import datetime
 
 class Task(db.Model):
     task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -21,6 +21,12 @@ class Task(db.Model):
         self.title = json["title"]
         self.description = json["description"]
         self.completed_at = json["completed_at"]
+
+    def mark_complete(self):
+        self.completed_at = datetime.datetime.now()
+
+    def mark_incomplete(self):
+        self.completed_at = None
 
     @classmethod
     def from_json(cls, json):

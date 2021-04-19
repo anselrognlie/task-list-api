@@ -1,4 +1,3 @@
-import unittest
 from unittest.mock import Mock, patch
 from datetime import datetime
 from app.models.task import Task
@@ -18,7 +17,7 @@ def test_mark_complete_on_incomplete_task(client, one_task):
 
     There is no action needed here, the tests should work as-is.
     """
-    with patch("app.routes.requests.post") as mock_get:
+    with patch("requests.post") as mock_get:
         mock_get.return_value.status_code = 200
 
         # Act
@@ -73,7 +72,7 @@ def test_mark_complete_on_completed_task(client, completed_task):
 
     There is no action needed here, the tests should work as-is.
     """
-    with patch("app.routes.requests.post") as mock_get:
+    with patch("requests.post") as mock_get:
         mock_get.return_value.status_code = 200
 
         # Act
