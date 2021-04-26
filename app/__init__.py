@@ -31,17 +31,17 @@ def create_app(test_config=None):
 
     # Register Blueprints here
 
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    if test_config:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/task_list_test'
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/task_list_development'
+    # if test_config:
+    #     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/task_list_test'
+    # else:
+    #     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@localhost:5432/task_list_development'
 
-    db.init_app(app)
-    migrate.init_app(app, db)
+    # db.init_app(app)
+    # migrate.init_app(app, db)
 
-    from .models.task import Task
+    # from .models.task import Task
 
     from .routes import root_bp, bp
     app.register_blueprint(root_bp)
