@@ -56,6 +56,23 @@ def tasks_index():
         json_tasks = [task.to_json() for task in tasks]
 
         return jsonify(json_tasks)
+
+        # title_query = request.args.get("title")
+        # if title_query:
+        #     tasks = Task.query.filter_by(title=title_query)
+        # else:
+        #     tasks = Task.query.all()
+
+        # tasks_response = []
+        # for task in tasks:
+        #     tasks_response.append({
+        #         "id": task.task_id,
+        #         "title": task.title,
+        #         "description": task.description
+        #     })
+ 
+        # return jsonify(tasks_response)
+
     elif request.method == 'POST':
         request_body = request.get_json()
         task = Task.from_json(request_body)
