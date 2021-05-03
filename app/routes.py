@@ -101,6 +101,7 @@ def tasks_show(task_id):
         return "", 404
 
     if request.method == 'GET':
+        goal = task.goal
         return { "task": task.to_json() }
     elif request.method == 'PUT':
         request_body = request.get_json()
@@ -188,3 +189,22 @@ def handle_goal(goal_id):
         return {
             "details": f'Goal {goal_id} "{goal.title}" successfully deleted'
         }
+
+@goal_bp.route("/<goal_id>/tasks", methods=('POST', 'GET'))
+def handle_goal_tasks(goal_id):
+    goal = Goal.query.get(goal_id)
+    if not goal:
+        return "", 404
+
+    if request.method == 'POST':
+        request_body = request.get_json()
+        task_ids = request_body["task_ids"]
+        for task_id in task_ids:
+            task = Task.query.get(task_id)
+            goal.tasks.append(task)
+
+        db.session.commit()
+
+        return goal.to_task_json()
+    elif request.method == 'GET':
+        return goal.to_detailed_json()
