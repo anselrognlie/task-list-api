@@ -95,10 +95,11 @@ def tasks_index():
 
 @bp.route("/<task_id>", methods=('GET', 'PUT', 'DELETE'))
 def tasks_show(task_id):
-    task = Task.query.filter(Task.task_id == task_id).one_or_none()
-    # task = Task.query.get(task_id)
-    if not task:
-        return "", 404
+    # task = Task.query.filter(Task.task_id == task_id).one_or_none()
+    # # task = Task.query.get(task_id)
+    # if not task:
+    #     return "", 404
+    task = Task.query.get_or_404(task_id)
 
     if request.method == 'GET':
         goal = task.goal
@@ -199,9 +200,12 @@ def handle_goal_tasks(goal_id):
     if request.method == 'POST':
         request_body = request.get_json()
         task_ids = request_body["task_ids"]
-        for task_id in task_ids:
-            task = Task.query.get(task_id)
-            goal.tasks.append(task)
+        # for task_id in task_ids:
+        #     task = Task.query.get(task_id)
+        #     goal.tasks.append(task)
+        # goal.tasks.extend(task_ids)
+        tasks = [Task.query.get(task_id) for task_id in task_ids]
+        goal.tasks = tasks
 
         db.session.commit()
 
