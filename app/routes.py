@@ -53,7 +53,7 @@ def tasks_index():
             if sort == 'asc':
                 tasks = tasks.order_by(Task.title)
             else:
-                tasks = tasks.order_by(desc(Task.title))
+                tasks = tasks.order_by(Task.title.desc())
         
         tasks = tasks.all()
 
