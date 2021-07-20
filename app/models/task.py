@@ -43,11 +43,15 @@ class Task(db.Model):
             if field not in json:
                 return None
 
+        completed_at = (
+            datetime.datetime.fromisoformat(json["completed_at"])
+            if json["completed_at"] else None
+        )
 
         inst = cls(
             title=json["title"],
             description=json["description"],
-            completed_at=json["completed_at"]
+            completed_at=completed_at
         )
 
         return inst

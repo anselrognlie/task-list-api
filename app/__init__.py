@@ -1,12 +1,18 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from werkzeug.exceptions import NotFound, BadRequest
 import os
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 
+# def handle_invalid_usage(error):
+#     response = jsonify(error.description)
+#     response.status_code = error.code
+#     return response
+    
 def create_app(test_config=None):
     app = Flask(__name__)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -44,5 +50,13 @@ def create_app(test_config=None):
     app.register_blueprint(root_bp)
     app.register_blueprint(bp)
     app.register_blueprint(goal_bp)
+
+    # app.errorhandler(NotFound)(handle_invalid_usage)
+    # app.errorhandler(BadRequest)(handle_invalid_usage)
+
+    @app.errorhandler(NotFound)
+    @app.errorhandler(BadRequest)
+    def handle_invalid_usage(error):
+        return jsonify(error.description), error.code
 
     return app

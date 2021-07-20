@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, make_response, request
 from sqlalchemy import desc
+from werkzeug.exceptions import BadRequest, NotFound
 import os
 
 from app import db
@@ -27,6 +28,14 @@ def broken_endpoint():
 
 @root_bp.route("/", methods=('GET',))
 def root():
+    # raise NotFound(f"Gaol 999 not found")
+    raise BadRequest(f"You messed up")
+    # try:
+    #     raise NotFound(f"Gaol 999 not found")
+    #     # Task.query.get_or_404(9999999)
+    # except Exception as ex:
+    #     print(ex)
+
     return {
         "name": "Joe",
         "message": "Go!"
