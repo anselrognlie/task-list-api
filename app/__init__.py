@@ -59,6 +59,6 @@ def create_app(test_config=None):
     @app.errorhandler(NotFound)
     @app.errorhandler(BadRequest)
     def handle_invalid_usage(error):
-        return jsonify(error.description), error.code
+        return jsonify(None), error.code  # terrible
 
     return app
