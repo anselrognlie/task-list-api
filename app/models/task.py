@@ -39,19 +39,18 @@ class Task(db.Model):
     @classmethod
     def from_json(cls, json):
         required_fields = ["title", "description", "completed_at"]
+        filtered_json = {}
         for field in required_fields:
             if field not in json:
                 return None
+            else:
+                filtered_json[field] = json[field]
 
-        completed_at = (
-            datetime.datetime.fromisoformat(json["completed_at"])
-            if json["completed_at"] else None
-        )
+        # completed_at = (
+        #     datetime.datetime.fromisoformat(json["completed_at"])
+        #     if json["completed_at"] else None
+        # )
 
-        inst = cls(
-            title=json["title"],
-            description=json["description"],
-            completed_at=completed_at
-        )
+        inst = cls(**filtered_json)
 
         return inst
