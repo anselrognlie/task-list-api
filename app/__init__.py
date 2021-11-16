@@ -2,11 +2,13 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.exceptions import NotFound, BadRequest
+from dotenv import load_dotenv
 import os
 
 
 db = SQLAlchemy()
 migrate = Migrate()
+load_dotenv()
 
 # def handle_invalid_usage(error):
 #     response = jsonify(error.description)
