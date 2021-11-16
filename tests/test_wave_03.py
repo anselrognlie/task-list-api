@@ -140,7 +140,7 @@ def test_create_task_with_valid_completed_at(client):
     response = client.post("/tasks", json={
         "title": "A Brand New Task",
         "description": "Test Description",
-        "completed_at": datetime.utcnow()
+        "completed_at": datetime.utcnow().isoformat()
     })
     response_body = response.get_json()
 
