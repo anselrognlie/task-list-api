@@ -82,14 +82,14 @@ def show(task_id):
             "task": task.to_json()
         }
     else:
-        return make_response(jsonify(None), 404)
+        return {"message": f"Task {task_id} not found"}, 404
 
 
 @tasks_bp.route("/<task_id>", methods=["PUT"])
 def update(task_id):
     task = Task.query.get(task_id)
     if not task:
-        return "", 404
+        return {"message": f"Task {task_id} not found"}, 404
 
     request_body = request.get_json()
     task.title = request_body["title"]
@@ -109,7 +109,7 @@ def update(task_id):
 def delete_task(task_id):
     task = Task.query.get(task_id)
     if not task:
-        return "", 404
+        return {"message": f"Task {task_id} not found"}, 404
 
     db.session.delete(task)
     db.session.commit()
@@ -123,7 +123,7 @@ def delete_task(task_id):
 def mark_complete(task_id):
     task = Task.query.get(task_id)
     if not task:
-        return "", 404
+        return {"message": f"Task {task_id} not found"}, 404
 
     task.completed_at = now()
 
@@ -153,7 +153,7 @@ def mark_complete(task_id):
 def mark_incomplete(task_id):
     task = Task.query.get(task_id)
     if not task:
-        return "", 404
+        return {"message": f"Task {task_id} not found"}, 404
 
     task.completed_at = None
 
@@ -188,14 +188,14 @@ def goals_show(goal_id):
             "goal": goal.to_json()
         }
     else:
-        return make_response(jsonify(None), 404)
+        return {"message": f"Goal {goal_id} not found"}, 404
 
 
-@goals_bp.route("/<goal_id>", methods=["PUT"])
+@ goals_bp.route("/<goal_id>", methods=["PUT"])
 def goals_update(goal_id):
     goal = Goal.query.get(goal_id)
     if not goal:
-        return "", 404
+        return {"message": f"Goal {goal_id} not found"}, 404
 
     request_body = request.get_json()
     goal.title = request_body["title"]
@@ -208,7 +208,7 @@ def goals_update(goal_id):
     }, 200
 
 
-@goals_bp.route("", methods=["POST"])
+@ goals_bp.route("", methods=["POST"])
 def goals_create():
     request_body = request.get_json()
 
@@ -227,11 +227,11 @@ def goals_create():
     }, 201
 
 
-@goals_bp.route("/<goal_id>", methods=["DELETE"])
+@ goals_bp.route("/<goal_id>", methods=["DELETE"])
 def goals_delete(goal_id):
     goal = Goal.query.get(goal_id)
     if not goal:
-        return "", 404
+        return {"message": f"Goal {goal_id} not found"}, 404
 
     db.session.delete(goal)
     db.session.commit()
@@ -241,12 +241,12 @@ def goals_delete(goal_id):
     }, 200
 
 
-@goals_bp.route("/<goal_id>/tasks", methods=["GET"])
+@ goals_bp.route("/<goal_id>/tasks", methods=["GET"])
 def goal_tasks(goal_id):
     goal = Goal.query.get(goal_id)
 
     if not goal:
-        return "", 404
+        return {"message": f"Goal {goal_id} not found"}, 404
 
     answer = {
         "id": goal.goal_id,
@@ -260,12 +260,12 @@ def goal_tasks(goal_id):
     return answer, 200
 
 
-@goals_bp.route("/<goal_id>/tasks", methods=["POST"])
+@ goals_bp.route("/<goal_id>/tasks", methods=["POST"])
 def goal_tasks_post(goal_id):
     goal = Goal.query.get(goal_id)
 
     if not goal:
-        return "", 404
+        return {"message": f"Goal {goal_id} not found"}, 404
 
     request_body = request.get_json()
 
@@ -277,7 +277,7 @@ def goal_tasks_post(goal_id):
     for task_id in request_body["task_ids"]:
         task = Task.query.get(task_id)
         if not task:
-            return "", 404
+            return {"message": f"Task {task_id} not found"}, 404
 
         goal.tasks.append(task)
 
